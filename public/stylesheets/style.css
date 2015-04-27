@@ -18,9 +18,9 @@ h1 {
 #marta, #alvaro {
   	display: inline;
     float:left;
-    margin:10%;
+    margin:5%;
     padding:2%;
-	max-width:50%;
+	max-width:40%;
 }
 
 #marta {
