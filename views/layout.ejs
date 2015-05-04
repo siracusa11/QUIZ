@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>The best QUIZ ever</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' media='only screen and (max-width: 480px)' href='/stylesheets/smartphone.css' />
+    <link rel='stylesheet' media='only screen and (min-width: 530px)' href='/stylesheets/wide.css' />
+  </head>
+  <body>
+    <div id="page-wrap">
+      <header class = "main" id="h1">
+        <h1>Quiz<span>: el juego de las preguntas</span></h1>
+      </header>
+      <nav class="main" id="n1" role="navigation">
+        <span><a href="/">Página Principal </a></span>
+        <span><a href="/quizes/question"> Comience a jugar</a></span>
+      </nav>
+
+      <section class="main" id="s1">
+        <%- body %>
+      </section>
+
+      <footer>
+         <p><a href="/authors">Autores</a></p>
+        <p><a href="http://es.wikipedia.org/wiki/Quiz">¿Qué es un Quiz?</a></p>
+      </footer>
+    </div>
+  </body>
+
+</html>
+

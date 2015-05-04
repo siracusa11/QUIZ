@@ -1,10 +1,32 @@
-body {
-	background-color:lightyellow;
-	font-family:Calibri, Sans-Serif;
-	padding-left:8%;
-	padding-right:8%;
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body{
+	font: 150% Calibri, Sans-Serif;
+}
+
+#page-wrap {
+	margin: 2% auto;
+	color: lightyellow;
+}
+
+#page-wrap > .main {
+	border: 3px double lightgreen;
+	padding-left:1%;
+	margin-bottom: 1px;
+	color: black;
 	text-align: center;
-	font-size: 150%;
+}
+
+section > div {
+	padding: 20px;
+	color: lightyellow;
+}
+
+nav span {
+	margin: 0px 10px 10px 0px;
 }
 
 h1 {
@@ -15,12 +37,16 @@ h1 {
 	color:#052;
 }
 
+h2 {
+	color:#052;
+}
+
 #marta, #alvaro {
   	display: inline;
     float:left;
-    margin:5%;
+    margin:2%;
     padding:2%;
-	max-width:40%;
+	max-width:38%;
 }
 
 #marta {
@@ -31,6 +57,7 @@ h1 {
 	clear:both;
 }
 
+
 a{
 	text-decoration:none;
 	color:#00B7FF;
@@ -39,4 +66,8 @@ a{
 a:hover{
 	background-color:#093;
 	color:#FFF;
+}
+
+header, nav, section, footer {
+	background-color:lightyellow;
 }
