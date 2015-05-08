@@ -1,0 +1,32 @@
+body{
+  background: lightblue;
+  margin:5%
+  font-size: xx-large;
+}
+
+#page-wrap:after {
+	content: "Smartphone Layout";
+	height:10%;
+}
+
+h1 span, section h2 {
+	display: none;
+}
+
+nav span{
+	display:block;
+}
+
+footer, input {
+	font-size: large;
+}
+
+#marta, #alvaro{
+  clear:both;
+  float:none;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  padding:2.5%;
+  max-width:95%;
+}
