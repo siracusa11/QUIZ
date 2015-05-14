@@ -8,11 +8,14 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'QUIZ' });
 });
 
-router.get('/quizes/question', quizController.question);
-router.get('/quizes/answer', quizController.answer);
+// GET /quizes?search = "Texto" --> ? indica parámetro opcional
+router.get('/quizes:search?', quizController.index);
+router.get('/quizes/:quizId(\\d+)', quizController.show);
+router.get('/quizes/:quizId(\\d+)/answer', quizController.answer);
 
 router.get('/authors', function(req, res, next) {
   res.render('authors', { title: 'AUTORES' });
 });
+
 
 module.exports = router;
