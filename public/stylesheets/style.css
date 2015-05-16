@@ -29,6 +29,11 @@ nav span {
 	margin: 0px 10px 10px 0px;
 }
 
+#ErrorMsgs {
+	color: #F61;
+	font-size: smaller;
+}
+
 h1 {
 	text-decoration:underline;
 	font-style: italic;

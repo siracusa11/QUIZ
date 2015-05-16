@@ -20,20 +20,18 @@ exports.load = function(req, res, next, quizId) {
 //GET /quizes/:id -> Solo si existe el id llega aquí
 exports.show = function(req, res) {
 	models.Quiz.find(req.params.quizId).then(function(quiz) {
-		res.render('quizes/show', {quiz: req.quiz}); 
+		res.render('quizes/show', {quiz: req.quiz, errors: []}); 
 	})
 };
 
 //GET /quizes/:id/answer -> Solo si existe el id llega aquí
 exports.answer = function(req, res) {
 	models.Quiz.find(req.params.quizId).then(function(quiz) {
+		var resultado = 'Incorrecto.';
 		if (req.query.respuesta === req.quiz.respuesta){
-			res.render('quizes/answer', 
-				{ quiz:req.quiz, respuesta: 'Correcto.'});
-		} else {
-			res.render('quizes/answer', 
-				{ quiz:req.quiz, respuesta: 'Incorrecto.'});
+			resultado = 'Correcto.';
 		}
+		res.render('quizes/answer', { quiz:req.quiz, respuesta: resultado, errors: [] });
 	})
 };
 
@@ -48,7 +46,7 @@ exports.index = function(req, res) {
 						})
 	.then(
 		function(quizes) {
-			res.render('quizes/index.ejs', { quizes: quizes });
+			res.render('quizes/index.ejs', { quizes: quizes, errors: [] });
 		}
 	//Si error, pasa al middleware de error
 	).catch(function(error) {next(error);}) 
@@ -59,7 +57,7 @@ exports.new = function (req, res) {
 	var quiz = models.Quiz.build( //crea objeto quiz
 		{pregunta: "", respuesta: ""}
 	);
-	res.render('quizes/new', {quiz: quiz})
+	res.render('quizes/new', {quiz: quiz, errors: []});
 };
 
 // POST /quizes/create
@@ -67,12 +65,22 @@ exports.create = function(req, res) {
 	//Inicializa con los parámetros enviados desde el formulario
 	var quiz = models.Quiz.build( req.body.quiz );
 
-	//Guarda en DB los campos pregunta y respuesta de quiz
-	quiz.save({fields: ["pregunta", "respuesta"]}).then(
-		function(){
-			//No tiene vista asociada así qeu realiza una redirección a /quizes
-			res.redirect('/quizes'); 
-		})
+	quiz
+	.validate()
+	.then(
+		function(err){
+			if(err){
+				res.render('quizes/new', {quiz: quiz, errors: err.errors});
+			} else { //save: Guarda en DB los campos pregunta y respuesta de quiz
+				quiz
+				.save({fields: ["pregunta", "respuesta"]})
+				.then(
+					function(){
+						res.redirect('/quizes'); //No tiene vista asociada así que realiza una redirección a /quizes
+				})
+			}
+		}
+	);
 };
 
 
