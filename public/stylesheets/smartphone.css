@@ -4,6 +4,10 @@ body{
   font-size: xx-large;
 }
 
+h1{
+  font-size: 200%;
+}
+
 #page-wrap:after {
 	content: "Smartphone Layout";
 	height:10%;
@@ -29,4 +33,8 @@ footer, input {
   margin-right:auto;
   padding:2.5%;
   max-width:95%;
+}
+
+button{
+  font-size: 80%;
 }

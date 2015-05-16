@@ -29,17 +29,18 @@ exports.answer = function(req, res) {
 	models.Quiz.find(req.params.quizId).then(function(quiz) {
 		if (req.query.respuesta === req.quiz.respuesta){
 			res.render('quizes/answer', 
-				{ quiz:req.quiz, respuesta: 'Correcto. Eres un Mewtwo.'});
+				{ quiz:req.quiz, respuesta: 'Correcto.'});
 		} else {
 			res.render('quizes/answer', 
-				{ quiz:req.quiz, respuesta: 'Incorrecto. Eres un Magikarp.'});
+				{ quiz:req.quiz, respuesta: 'Incorrecto.'});
 		}
 	})
 };
 
-//GET /quizes:?search
+//GET /quizes -> Parámetro search opcional /quizes:?search
 exports.index = function(req, res) {
 	var search = req.query.search || '';
+	//Lo apaña para quitar espacios
 	var search_like = "%" + search.replace(/ +/g, "%") + "%";
 
 	models.Quiz.findAll({where: ["pregunta like ?", search_like],
@@ -51,6 +52,27 @@ exports.index = function(req, res) {
 		}
 	//Si error, pasa al middleware de error
 	).catch(function(error) {next(error);}) 
+};
+
+// GET /quizes/new
+exports.new = function (req, res) {
+	var quiz = models.Quiz.build( //crea objeto quiz
+		{pregunta: "", respuesta: ""}
+	);
+	res.render('quizes/new', {quiz: quiz})
+};
+
+// POST /quizes/create
+exports.create = function(req, res) {
+	//Inicializa con los parámetros enviados desde el formulario
+	var quiz = models.Quiz.build( req.body.quiz );
+
+	//Guarda en DB los campos pregunta y respuesta de quiz
+	quiz.save({fields: ["pregunta", "respuesta"]}).then(
+		function(){
+			//No tiene vista asociada así qeu realiza una redirección a /quizes
+			res.redirect('/quizes'); 
+		})
 };
 
 
