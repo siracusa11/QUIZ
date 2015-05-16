@@ -20,7 +20,6 @@ exports.load = function(req, res, next, quizId) {
 //GET /quizes/:id -> Solo si existe el id llega aquí
 exports.show = function(req, res) {
 	models.Quiz.find(req.params.quizId).then(function(quiz) {
-		console.log('Pregunta: '+req.quiz.pergunta);
 		res.render('quizes/show', {quiz: req.quiz, errors: []}); 
 	})
 };
@@ -109,6 +108,15 @@ exports.update = function(req, res) {
       }     // Redirección HTTP a lista de preguntas porque no hay HTML asociado
     }
   );
+};
+
+// DELETE /quizes/:id
+exports.destroy = function(req, res) {
+	req.quiz.destroy().then( function() {
+		res.redirect('/quizes');
+	}).catch(function(error) {
+		next(error);
+	});
 };
 
 
