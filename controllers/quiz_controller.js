@@ -20,6 +20,7 @@ exports.load = function(req, res, next, quizId) {
 //GET /quizes/:id -> Solo si existe el id llega aquí
 exports.show = function(req, res) {
 	models.Quiz.find(req.params.quizId).then(function(quiz) {
+		console.log('Pregunta: '+req.quiz.pergunta);
 		res.render('quizes/show', {quiz: req.quiz, errors: []}); 
 	})
 };
@@ -81,6 +82,33 @@ exports.create = function(req, res) {
 			}
 		}
 	);
+};
+
+//GET /quizes/:id/edit
+exports.edit = function(req, res) {
+	var quiz = req.quiz; //autoload de instancia de quiz
+
+	res.render('quizes/edit', {quiz:quiz, errors: []});
+};
+
+// PUT /quizes/:id
+exports.update = function(req, res) {
+  req.quiz.pregunta  = req.body.quiz.pregunta;
+  req.quiz.respuesta = req.body.quiz.respuesta;
+
+  req.quiz
+  .validate()
+  .then(
+    function(err){
+      if (err) {
+        res.render('quizes/edit', {quiz: req.quiz, errors: err.errors});
+      } else {
+        req.quiz     // save: guarda campos pregunta y respuesta en DB
+        .save( {fields: ["pregunta", "respuesta"]})
+        .then( function(){ res.redirect('/quizes');});
+      }     // Redirección HTTP a lista de preguntas porque no hay HTML asociado
+    }
+  );
 };
 
 
