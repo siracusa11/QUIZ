@@ -1,26 +1,65 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'start' ]
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '--save',
+1 verbose cli   'express-session' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.32
-4 verbose run-script [ 'prestart', 'start', 'poststart' ]
-5 info prestart QUIZ@0.0.0
-6 info start QUIZ@0.0.0
-7 verbose unsafe-perm in lifecycle true
-8 info QUIZ@0.0.0 Failed to exec start script
-9 error QUIZ@0.0.0 start: `node ./bin/www`
-9 error Exit status 8
-10 error Failed at the QUIZ@0.0.0 start script.
-10 error This is most likely a problem with the QUIZ package,
-10 error not with npm itself.
-10 error Tell the author that this fails on your system:
-10 error     node ./bin/www
-10 error You can get their info via:
-10 error     npm owner ls QUIZ
-10 error There is likely additional logging output above.
-11 error System Linux 3.16.0-34-generic
-12 error command "/usr/local/bin/node" "/usr/local/bin/npm" "start"
-13 error cwd /home/marta/Desktop/CORE/QUIZ
-14 error node -v v0.10.32
-15 error npm -v 1.4.28
-16 error code ELIFECYCLE
-17 verbose exit [ 1, true ]
+4 verbose readDependencies using package.json deps
+5 verbose cache add [ 'express-session', null ]
+6 verbose cache add name=undefined spec="express-session" args=["express-session",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: 'express-session',
+7 verbose parsed url   path: 'express-session',
+7 verbose parsed url   href: 'express-session' }
+8 silly lockFile 6ca9c35e-express-session express-session
+9 verbose lock express-session /home/marta/.npm/6ca9c35e-express-session.lock
+10 silly lockFile 6ca9c35e-express-session express-session
+11 silly lockFile 6ca9c35e-express-session express-session
+12 verbose addNamed [ 'express-session', '' ]
+13 verbose addNamed [ null, '*' ]
+14 silly lockFile 03cac062-express-session express-session@
+15 verbose lock express-session@ /home/marta/.npm/03cac062-express-session.lock
+16 silly addNameRange { name: 'express-session', range: '*', hasData: false }
+17 verbose request where is /express-session
+18 verbose request registry https://registry.npmjs.org/
+19 verbose request id cfd9d0a0da0e3c4c
+20 verbose url raw /express-session
+21 verbose url resolving [ 'https://registry.npmjs.org/', './express-session' ]
+22 verbose url resolved https://registry.npmjs.org/express-session
+23 verbose request where is https://registry.npmjs.org/express-session
+24 info trying registry request attempt 1 at 03:26:31
+25 http GET https://registry.npmjs.org/express-session
+26 info retry will retry, error on last attempt: Error: getaddrinfo ENOTFOUND
+27 info trying registry request attempt 2 at 03:27:02
+28 http GET https://registry.npmjs.org/express-session
+29 info retry will retry, error on last attempt: Error: getaddrinfo ENOTFOUND
+30 info trying registry request attempt 3 at 03:28:22
+31 http GET https://registry.npmjs.org/express-session
+32 silly lockFile 03cac062-express-session express-session@
+33 silly lockFile 03cac062-express-session express-session@
+34 error network getaddrinfo ENOTFOUND
+34 error network This is most likely not a problem with npm itself
+34 error network and is related to network connectivity.
+34 error network In most cases you are behind a proxy or have bad network settings.
+34 error network
+34 error network If you are behind a proxy, please make sure that the
+34 error network 'proxy' config is set properly.  See: 'npm help config'
+35 error System Linux 3.16.0-37-generic
+36 error command "/usr/local/bin/node" "/usr/local/bin/npm" "install" "--save" "express-session"
+37 error cwd /home/marta/Desktop/CORE/QUIZ
+38 error node -v v0.10.32
+39 error npm -v 1.4.28
+40 error syscall getaddrinfo
+41 error code ENOTFOUND
+42 error errno ENOTFOUND
+43 verbose exit [ 1, true ]

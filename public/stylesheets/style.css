@@ -62,7 +62,6 @@ h2 {
 	clear:both;
 }
 
-
 a{
 	text-decoration:none;
 	color:#00B7FF;
@@ -75,4 +74,8 @@ a:hover{
 
 header, nav, section, footer {
 	background-color:lightyellow;
+}
+
+.right {
+	float: right;
 }
