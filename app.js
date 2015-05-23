@@ -31,6 +31,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Helpers dinámicos:
 app.use(function(req, res, next) {
 
+  // Redirige a donde iba o al raíz
+  if (!req.session.redir){
+    req.session.redir = '/';
+  }
+
   // Guardar path en session.redir para después de login
   if (!req.path.match(/\/login|\/logout/)) {
     req.session.redir = req.path;
@@ -41,8 +46,27 @@ app.use(function(req, res, next) {
   next();
 })
 
+// MW de AUTOLOGOUT
+app.use(function(req, res, next) {
+  // Si hay sesión iniciada
+  if(req.session.user){
+    //Toma la hora
+    var now = (new Date()).getTime();
+    //Si han pasado más de 2 minutos -> sesión caducada
+    if(now - req.session.lastTime > 120000){
+      console.log("Sesión caducada");
+      //req.session.redir = '/logout'; //Auto-logout
+      // Actualiza la variable de inicio de sesión
+      req.session.lastTime = now;
+      res.redirect('/logout'); //Auto-logout
+    }
+    // Actualiza la variable de inicio de sesión
+    req.session.lastTime = now;
+  }
+  next();
+})
 
-
+// MW de ruta
 app.use('/', routes);
 
 
