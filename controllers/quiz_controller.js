@@ -73,6 +73,9 @@ exports.new = function (req, res) {
 
 // POST /quizes/create
 exports.create = function(req, res) {
+	//Añadimos el campo UserId, guardado en la session al objeto req.body.quiz deñ formulario
+	req.body.quiz.UserId = req.session.user.id;
+
 	//Inicializa con los parámetros enviados desde el formulario
 	var quiz = models.Quiz.build( req.body.quiz );
 
@@ -84,7 +87,7 @@ exports.create = function(req, res) {
 				res.render('quizes/new', {quiz: quiz, errors: err.errors});
 			} else { //save: Guarda en DB los campos pregunta y respuesta de quiz
 				quiz
-				.save({fields: ["pregunta", "respuesta"]})
+				.save({fields: ["pregunta", "respuesta", "UserId"]})
 				.then(
 					function(){
 						res.redirect('/quizes'); //No tiene vista asociada así que realiza una redirección a /quizes
@@ -115,7 +118,9 @@ exports.update = function(req, res) {
       } else {
         req.quiz     // save: guarda campos pregunta y respuesta en DB
         .save( {fields: ["pregunta", "respuesta"]})
-        .then( function(){ res.redirect('/quizes');});
+        .then( function(){ 
+        	res.redirect('/quizes');
+        });
       }     // Redirección HTTP a lista de preguntas porque no hay HTML asociado
     }
   );
@@ -126,6 +131,34 @@ exports.destroy = function(req, res) {
 	req.quiz.destroy().then( function() {
 		res.redirect('/quizes');
 	}).catch(function(error) {
+		next(error);
+	});
+};
+
+// GET /quizes/statistics
+exports.statistics  = function(req, res, next){
+	console.log("Estadísticas");
+	models.Quiz.count().then(function (npregs) { 	//Preguntas
+			models.Comment.count().then(function (ncomms) { 	//Comentarios
+					models.Comment.count({ include: models.Quiz, distinct: 'quizId' }).then(function (concomms) { // Preguntas con comentarios
+	//models.Comment.count({ distinct: true, include: models.Quiz}).then(function (concomms) { // Preguntas con comentarios
+		// quiero dar: SELECT COUNT (DISTINCT QUIZID) FROM COMMENTS
+						res.render('quizes/statistics.ejs', {
+							npregs: npregs,
+							ncomms: ncomms,
+							ncommspreg: (ncomms/npregs),
+							sincomms: (npregs - concomms),
+							concomms: concomms,
+							errors: []
+						});
+
+					}).catch(function (error){
+						next(error);
+					});
+			}).catch(function (error){
+				next(error);
+			});
+	}).catch(function (error){
 		next(error);
 	});
 };
