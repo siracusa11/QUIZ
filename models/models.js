@@ -41,23 +41,44 @@ var Quiz = sequelize.import(quiz_path);
 var comment_path = path.join(__dirname,'comment');
 var Comment = sequelize.import(comment_path);
 
+// Importar la definicion de la tabla User en user.js
+var user_path = path.join(__dirname,'user');
+var User = sequelize.import(user_path);
+
 Comment.belongsTo(Quiz) // Los comentarios pertenecen a los quizes
 Quiz.hasMany(Comment); // Un quiz puede tener muchos comentarios
 
 exports.Quiz = Quiz; // Exportar definición de tabla Quiz
 exports.Comment = Comment; // Exportar definición de tabla Comment
+exports.User = User; // Exportar definición de tabla User
+
+// Los quizes pertenecen a un usuario registrado
+Quiz.belongsTo(User); //Relación 1-N entre tablas User y Quiz
+User.hasMany(Quiz);
+
 
 // sequelize.sync() crea e inicializa tabla de preguntas en DB
 sequelize.sync().then(function() {
   // then(..) ejecuta el manejador una vez creada la tabla
-  Quiz.count().then(function (count){
-    if(count === 0) {   // la tabla se inicializa solo si está vacía
-      Quiz.bulkCreate( 
-        [ {pregunta: 'Capital de Italia',   respuesta: 'Roma'},
-          {pregunta: 'Capital de Portugal', respuesta: 'Lisboa'}
+  User.count().then(function (count){
+    if(count === 0) {
+      //Se inicializa con 2 usuarios
+      User.bulkCreate(
+        [ {username: 'admin', password: '1234', isAdmin: true}, //única manera de crear admin
+          {username: 'pepe', password: '5678'}
         ]
-      ).then(function(){console.log('Base de datos inicializada')});
-
+      ).then(function(){
+        console.log('Base de datos (tabla user) inicializada.');
+        Quiz.count().then(function (count){
+          if(count === 0) {   // la tabla se inicializa solo si está vacía
+            Quiz.bulkCreate( //Los quizes pertenecen a pepe
+             [ {pregunta: 'Capital de Italia',   respuesta: 'Roma', UserId: 2},
+               {pregunta: 'Capital de Portugal', respuesta: 'Lisboa', UserId: 2}
+              ]
+            ).then(function(){console.log('Base de datos (tabla Quiz) inicializada')});
+          };
+        });
+      });
     };
   });
 });
