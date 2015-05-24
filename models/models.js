@@ -61,7 +61,7 @@ User.hasMany(Quiz);
 sequelize.sync().then(function() {
   // then(..) ejecuta el manejador una vez creada la tabla
   User.count().then(function (count){
-    if(count === 0) {
+    if(count === 0) { //La tabla se inicializa solo si está vacía
       //Se inicializa con 2 usuarios
       User.bulkCreate(
         [ {username: 'admin', password: '1234', isAdmin: true}, //única manera de crear admin

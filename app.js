@@ -29,15 +29,15 @@ app.use(methodOverride('_method')); //Encapsular el método PUT como parámetro 
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Helpers dinámicos:
-app.use(function(req, res, next) {
+app.use(function(req, res, next) {    //Gestión de redirección con inicialización
 
-  // Redirige a donde iba o al raíz
+  // Si no existe lo inicializa
   if (!req.session.redir){
     req.session.redir = '/';
   }
 
   // Guardar path en session.redir para después de login
-  if (!req.path.match(/\/login|\/logout/)) {
+  if (!req.path.match(/\/login|\/logout|\/user/)) { //No guarda si login, logout o user
     req.session.redir = req.path;
   }
 

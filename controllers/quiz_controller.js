@@ -73,7 +73,7 @@ exports.new = function (req, res) {
 
 // POST /quizes/create
 exports.create = function(req, res) {
-	//Añadimos el campo UserId, guardado en la session al objeto req.body.quiz deñ formulario
+	//Añadimos el campo UserId, guardado en la session al objeto req.body.quiz del formulario
 	req.body.quiz.UserId = req.session.user.id;
 
 	//Inicializa con los parámetros enviados desde el formulario
@@ -146,7 +146,7 @@ exports.statistics  = function(req, res, next){
 						res.render('quizes/statistics.ejs', {
 							npregs: npregs,
 							ncomms: ncomms,
-							ncommspreg: (ncomms/npregs),
+							ncommspreg: (ncomms/npregs).toFixed(2),
 							sincomms: (npregs - concomms),
 							concomms: concomms,
 							errors: []

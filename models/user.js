@@ -11,21 +11,22 @@ module.exports = function(sequelize, DataTypes) {
 				type: DataTypes.STRING,
 				unique: true, // Comprueba que no hay otro usuario con el mismo id
 				validate: {
+					notEmpty: {msg: "-> Falta Username"}, //ESTO LO PONGO YO PORQUE ES DE SENTIDO COMÚN
 					// Hay que devolver un mensaje de error si el username ya existe
-                    isUnique: function (name, next) {
+                    isUnique: function (value, next) {
                         var self = this;
                         // Busca el nombre en la base de datos
-                        User.find({where: {username: name}})
-                        .then(function (user) {
+                        User.find({where: {username: value}})
+                        .then(function(user) {
                         		//Si existe un usuario con ese mismo nombre
-                                if (user && name.id !== user.id) {
+                                if(user && self.id !== user.id){
                                 	//Mensaje de error
                                     return next('Username ya utilizado');
                                 }
                                 //Si no existe, todo bien
                                 return next();
                         })
-                        .catch(function (err) {
+                        .catch(function(err) {
                             return next(err);
                         });
                     }
@@ -35,6 +36,7 @@ module.exports = function(sequelize, DataTypes) {
 				type: DataTypes.STRING,
 				validate: {notEmpty: {msg: "-> Falta Password"}},
 				set: function (password){
+					console.log("\nContraseña: "+ password);
 					// Encripta la password pasada como parámetro
 					var encripted = crypto
 									.createHmac('sha1', key)
@@ -44,6 +46,7 @@ module.exports = function(sequelize, DataTypes) {
                     if (password === '') {
                         encripted = '';
                     }
+                    console.log("\nCifrada: " + encripted);
                     this.setDataValue('password', encripted);
 				}
 			},

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>The best QUIZ ever</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' media='only screen and (max-width: 480px)' href='/stylesheets/smartphone.css' />
     <link rel='stylesheet' media='only screen and (min-width: 530px)' href='/stylesheets/wide.css' />
@@ -12,9 +12,14 @@
     <div id="page-wrap">
       <header class = "main" id="h1">
         <%if(!session.user){%>
-          <span class="right"><a href="/login">Login</a></span>
+          <span class="right">
+            <a href="/user">Sign up</a> 
+          - <a href="/login">Login</a></span>
         <%}else{%>
-          <span class="right"> <%=session.user.username%> <a href="/logout">Logout</a></span>
+          <span class="right">
+            <%=session.user.username%> 
+          - <a href="/user/<%=session.user.id%>/edit">Settings</a> 
+          - <a href="/logout">Logout</a></span>
         <%}%>
 
         <h1>Quiz<span>: El juego de las preguntas</span></h1>
