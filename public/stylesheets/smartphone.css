@@ -21,7 +21,11 @@ nav span{
 	display:block;
 }
 
-footer, input {
+input, button {
+  font-size: x-large;
+}
+
+footer {
 	font-size: large;
 }
 
@@ -35,6 +39,6 @@ footer, input {
   max-width:95%;
 }
 
-button{
-  font-size: 80%;
+.quiz_img {
+  float: none;
 }

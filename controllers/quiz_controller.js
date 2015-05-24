@@ -2,19 +2,18 @@
 
 var models = require('../models/models.js');
 
-// MW que permite acciones solamente si el quiz objeto
-// pertenece al usuario logueado o si el cuenta admin
+// MW que permite acciones solamente si el quiz objeto pertenece al usuario logeado o si es cuenta admin
 exports.ownershipRequired = function(req, res, next){
-	var objQuizOwner = req.quiz.UserId;
-	var logUser = req.session.user.id;
-	var isAdmin = req.session.user.isAdmin;
+    var objQuizOwner = req.quiz.UserId;
+    var logUser = req.session.user.id;
+    var isAdmin = req.session.user.isAdmin;
 
 	//Puede modificar quizes si es el administrador o el propietario
-	if ( isAdmin || objQuizOwner === logUser){
-		next();
-	} else {
-		res.redirect('/');
-	}
+    if (isAdmin || objQuizOwner === logUser) {
+        next();
+    } else {
+        res.redirect('/');
+    }
 };
 
 
@@ -76,7 +75,9 @@ exports.index = function(req, res) {
 			res.render('quizes/index.ejs', { quizes: quizes, errors: [] });
 		}
 	//Si error, pasa al middleware de error
-	).catch(function(error) {next(error);}) 
+	).catch(function(error) {
+		next(error);
+	}); 
 };
 
 // GET /quizes/new
@@ -92,26 +93,31 @@ exports.create = function(req, res) {
 	//Añadimos el campo UserId, guardado en la session al objeto req.body.quiz del formulario
 	req.body.quiz.UserId = req.session.user.id;
 
+	//Si el quiz enviado incluye una imagen, su referencia se añada a la DB
+	if(req.files.image){
+    	req.body.quiz.image = req.files.image.name;
+  	}
+
 	//Inicializa con los parámetros enviados desde el formulario
 	var quiz = models.Quiz.build( req.body.quiz );
 
 	quiz
-	.validate()
-	.then(
-		function(err){
-			if(err){
-				res.render('quizes/new', {quiz: quiz, errors: err.errors});
-			} else { //save: Guarda en DB los campos pregunta y respuesta de quiz
-				quiz
-				.save({fields: ["pregunta", "respuesta", "UserId"]})
-				.then(
-					function(){
-						res.redirect('/quizes'); //No tiene vista asociada así que realiza una redirección a /quizes
-				})
-			}
-		}
-	);
+  	.validate()
+  	.then(
+    	function(err){
+     		if (err) {
+        		res.render('quizes/new', {quiz: quiz, errors: err.errors});
+     		} else {
+        		quiz // save: guarda en DB campos pregunta y respuesta de quiz
+       			.save({fields: ["pregunta", "respuesta", "UserId", "image"]})
+        		.then( function(){ 
+        			res.redirect('/quizes');
+        		})
+      		}      // Redirección HTTP a lista de preguntas porque no hay vista asociada
+    	}
+  	).catch(function(error){next(error)});
 };
+
 
 //GET /quizes/:id/edit
 exports.edit = function(req, res) {
@@ -122,24 +128,30 @@ exports.edit = function(req, res) {
 
 // PUT /quizes/:id
 exports.update = function(req, res) {
-  req.quiz.pregunta  = req.body.quiz.pregunta;
-  req.quiz.respuesta = req.body.quiz.respuesta;
+	//Si el quiz enviado incluye una imagen, su referencia se añada a la DB
+	if(req.files.image){
+    	req.quiz.image = req.files.image.name;
+  	}
+	req.quiz.pregunta  = req.body.quiz.pregunta;
+	req.quiz.respuesta = req.body.quiz.respuesta;
 
-  req.quiz
-  .validate()
-  .then(
-    function(err){
-      if (err) {
-        res.render('quizes/edit', {quiz: req.quiz, errors: err.errors});
-      } else {
-        req.quiz     // save: guarda campos pregunta y respuesta en DB
-        .save( {fields: ["pregunta", "respuesta"]})
-        .then( function(){ 
-        	res.redirect('/quizes');
-        });
-      }     // Redirección HTTP a lista de preguntas porque no hay HTML asociado
-    }
-  );
+  	req.quiz
+  	.validate()
+  	.then(
+    	function(err){
+	      	if (err) {
+	        	res.render('quizes/edit', {quiz: req.quiz, errors: err.errors});
+	      	} else {
+	        	req.quiz     // save: guarda campos pregunta y respuesta en DB
+	        	.save( {fields: ["pregunta", "respuesta", "image"]})
+	        	.then( function(){ 
+	        		res.redirect('/quizes');
+	        	});
+	      	}     // Redirección HTTP a lista de preguntas (URL relativo)
+	    }
+  ).catch(function(error){
+  	next(error);
+  });
 };
 
 // DELETE /quizes/:id

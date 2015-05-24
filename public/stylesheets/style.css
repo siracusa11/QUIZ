@@ -79,3 +79,8 @@ header, nav, section, footer {
 .right {
 	float: right;
 }
+
+.quiz_img {
+	height: 150px;
+	float: left;
+}
