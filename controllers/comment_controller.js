@@ -1,6 +1,32 @@
 // Controlador de comentarios
 var models = require('../models/models.js');
 
+// MW que permite acciones solamente si el quiz objeto
+// pertenece al usuario logueado o si el cuenta admin
+exports.ownershipRequired = function(req, res, next){
+	models.Quiz.find({
+		where: {
+			id: Number(req.comment.QuizId)
+		}
+	}).then (function(quiz) {
+		if (quiz) {
+			var objQuizOwner = quiz.UserId;
+			var logUser = req.session.user.id;
+			var isAdmin = req.session.user.isAdmin;
+
+			//Puede modificar quizes si es el administrador o el propietario del quiz
+			if ( isAdmin || objQuizOwner === logUser){
+				next();
+			} else {
+				res.redirect('/');
+			}
+		} else {
+			next(new Error ('No existe quizId = '+quizId));
+		}
+	}).catch(function(error){
+		next(error);
+	});
+};
 // Autoload :id de comentarios
 exports.load = function(req, res, next, commentId){
 	models.Comment.find({

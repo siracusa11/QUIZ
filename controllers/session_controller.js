@@ -19,12 +19,15 @@ exports.new = function(req, res) {
 	res.render('sessions/new', {errors: errors});
 };
 
-// POST /login --Crea la sesión
+// POST /login --Crea la sesión si el usuario se autentica
 exports.create = function(req, res) {
+	
 	var login = req.body.login;
 	var password = req.body.password;
+
 	var userController = require('./user_controller');
 	userController.autenticar(login, password, function(error, user) {
+		
 		if (error) { // Si hay un error devuelve los mensajes de error del inicio de sesión
 			req.session.errors = [{"message": 'Se ha producido un error: ' + error}];
 			res.redirect("/login");
@@ -33,7 +36,7 @@ exports.create = function(req, res) {
 
 		// Crear req.session.user y guardar campos id y username
 		// La sesión se define por la existencia de: req.session.user
-		req.session.user = {id: user.id, username: user.username};
+		req.session.user = {id: user.id, username: user.username, isAdmin: user.isAdmin};
 
 		res.redirect(req.session.redir.toString()); //redirección a path anterior a login
 

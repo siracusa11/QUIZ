@@ -1,6 +1,21 @@
 //Controlador de usuarios
 var models = require('../models/models.js');
 
+// MW que permite acciones solamente si el quiz objeto
+// pertenece al usuario logueado o si el cuenta admin
+exports.ownershipRequired = function(req, res, next){
+	var objUser = req.user.id;
+	var logUser = req.session.user.id;
+	var isAdmin = req.session.user.isAdmin;
+
+	//Puede modificar quizes si es el administrador o el propietario de la cuenta
+	if ( isAdmin || objUser === logUser){
+		next();
+	} else {
+		res.redirect('/');
+	}
+};
+
 //Función de autoload
 exports.load = function(req, res, next, userId){
 	models.User.find({
