@@ -27,6 +27,9 @@
       <nav class="main" id="n1" role="navigation">
         <span><a href="/">Página Principal </a></span>
         <span><a href="/quizes"> Comience a jugar</a></span>
+        <%if(session.user){%>
+          <span><a href="/user/<%=session.user.id%>/quizes">Mis Preguntas</a></span>
+        <%}%>
         <span><a href="/quizes/statistics"> Estadísticas</a></span>
       </nav>
 

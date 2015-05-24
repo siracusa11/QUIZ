@@ -63,13 +63,24 @@ exports.answer = function(req, res) {
 
 //GET /quizes -> Parámetro search opcional /quizes:?search
 exports.index = function(req, res) {
-	var search = req.query.search || '';
-	//Lo apaña para quitar espacios
-	var search_like = "%" + search.replace(/ +/g, "%") + "%";
+	
+	var options = {};
+	//req.user es creado por autoload de usuario si la ruta lleva el parámetro :quizId
+	if(req.user){ 
+		options.where = {UserId: req.user.id};
+	} else if(req.query.search){ //Lo pongo así para conservar la funcionalidad de la caja de búsquedas
+		var search = req.query.search || '';
+		//Lo apaña para quitar espacios
+		var search_like = "%" + search.replace(/ +/g, "%") + "%";
+		//['pregunta like ?', search_like]
+		options.where = ['pregunta like ?', search_like];
+		options.order = [['updatedAt', 'DESC']];
+	}
 
-	models.Quiz.findAll({where: ["pregunta like ?", search_like],
-			 			 order: [['updatedAt', 'DESC']]
-						})
+	models.Quiz.findAll(options//{where: ["pregunta like ?", search_like],
+			 			// order: [['updatedAt', 'DESC']]
+						//}
+						)
 	.then(
 		function(quizes) {
 			res.render('quizes/index.ejs', { quizes: quizes, errors: [] });
