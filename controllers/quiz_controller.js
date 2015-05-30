@@ -45,9 +45,21 @@ exports.load = function(req, res, next, quizId) {
 
 //GET /quizes/:id -> Solo si existe el id llega aquí
 exports.show = function(req, res) {
-	models.Quiz.find(req.params.quizId).then(function(quiz) {
+	//Gestión de favoritos
+	//Si hay sesión iniciada
+	if (req.session.user){
+		//Comprueba si la pregunta es favorita del usuario y lo pone para que se pinte
+		req.quiz.hasUser(req.session.user.id).then(function(fav){
+			if(fav){
+				req.quiz.favourite = true; //Atributo boolean para saber si se debe pintar de rojo o de gris
+			}
+			res.render('quizes/show', {quiz: req.quiz, errors: []});
+		}).catch(function(error){
+			next(error);
+		});
+	}else{ //Repito código porque no se guardan los cambios que hago dentro de la otra función
 		res.render('quizes/show', {quiz: req.quiz, errors: []}); 
-	})
+	}
 };
 
 //GET /quizes/:id/answer -> Solo si existe el id llega aquí
@@ -62,33 +74,53 @@ exports.answer = function(req, res) {
 };
 
 //GET /quizes -> Parámetro search opcional /quizes:?search
-exports.index = function(req, res) {
+exports.index = function(req, res, next) {
 	
 	var options = {};
-	//req.user es creado por autoload de usuario si la ruta lleva el parámetro :quizId
-	if(req.user){ 
+	//req.user es creado por autoload de usuario si la ruta lleva el parámetro :userId -> Solo lo lleva si vamos a Mis Preguntas
+	if(req.user){
+		req.session.redir = req.path;// Cuando lleva /user el middleware no actualiza redir -> compatibilidad Mis Preguntas y Favoritos 
 		options.where = {UserId: req.user.id};
-	} else if(req.query.search){ //Lo pongo así para conservar la funcionalidad de la caja de búsquedas
+	} else if (req.query.search){ //Lo pongo así para conservar la funcionalidad de la caja de búsquedas
 		var search = req.query.search || '';
 		//Lo apaña para quitar espacios
 		var search_like = "%" + search.replace(/ +/g, "%") + "%";
-		//['pregunta like ?', search_like]
 		options.where = ['pregunta like ?', search_like];
 		options.order = [['updatedAt', 'DESC']];
 	}
 
-	models.Quiz.findAll(options//{where: ["pregunta like ?", search_like],
-			 			// order: [['updatedAt', 'DESC']]
-						//}
-						)
-	.then(
-		function(quizes) {
+	models.Quiz.findAll(options).then(function(quizes) {
+		//Marcamos los quizes favoritos para que cambie la vista
+		if(req.session.user){	
+			// Carga al usuario
+			models.User.find({where: {id: Number(req.session.user.id)}
+			}).then(function(user) {
+				// Carga quizes favoritos del usuario
+				user.getQuizzes().then(function(favourites){ 	//Me devuelve un array con todos mis favoritos
+					//Marcarlos como que se deben pintar como favoritos
+					quizes.forEach(function(quiz){
+						favourites.forEach(function(favourite){
+							if(quiz.id === favourite.id){
+								quiz.favourite = true; //Atributo boolean para saber si se debe pintar de rojo o de gris
+							}
+						});
+					});
+					//Redirige a la misma página -> Lo tengo que poner repetido porque el atributo favourite no perdura al salir
+					res.render('quizes/index.ejs', {
+						quizes: quizes, //Reutiliza la lista de preguntas de quizes/index
+						errors: []
+					});
+				});
+			});
+		// Redirige a la misma página
+		}else{
 			res.render('quizes/index.ejs', { quizes: quizes, errors: [] });
-		}
+		}	 
 	//Si error, pasa al middleware de error
-	).catch(function(error) {
+	}).catch(function(error) {
 		next(error);
 	}); 
+
 };
 
 // GET /quizes/new

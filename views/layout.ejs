@@ -29,12 +29,13 @@
         <span><a href="/quizes"> Comience a jugar</a></span>
         <%if(session.user){%>
           <span><a href="/user/<%=session.user.id%>/quizes">Mis Preguntas</a></span>
+          <span><a href="/user/<%=session.user.id%>/favourites">Favoritos</a></span>
         <%}%>
         <span><a href="/quizes/statistics"> Estadísticas</a></span>
       </nav>
 
       <section class="main" id="s1">
-      <% if (errors.length) { %>
+      <% if (errors && errors.length) { %>
         <span id='ErrorMsgs'>
           Corregir errores:<br/>
           <% for (var i in errors) { %>

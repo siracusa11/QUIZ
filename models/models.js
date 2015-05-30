@@ -48,13 +48,21 @@ var User = sequelize.import(user_path);
 Comment.belongsTo(Quiz) // Los comentarios pertenecen a los quizes
 Quiz.hasMany(Comment); // Un quiz puede tener muchos comentarios
 
-exports.Quiz = Quiz; // Exportar definición de tabla Quiz
-exports.Comment = Comment; // Exportar definición de tabla Comment
-exports.User = User; // Exportar definición de tabla User
-
 // Los quizes pertenecen a un usuario registrado
 Quiz.belongsTo(User); //Relación 1-N entre tablas User y Quiz
 User.hasMany(Quiz);
+
+//Tabla N:N->Favourites: Tabla join para relacionar las tablas de usuarios y de quizes
+var Favourites = sequelize.define('Favourites');
+Quiz.belongsToMany(User, {through: 'Favourites'}); //Un Quiz tiene muchos fans
+User.belongsToMany(Quiz, {through: 'Favourites'}); //Un Usuario tiene muchos favs
+//Crea la columna Favourites en ambas tablas: en principio ya no es necesario crear un favourites.js
+
+// Exportamos tablas
+exports.Quiz = Quiz; // Exportar definición de tabla Quiz
+exports.Comment = Comment; // Exportar definición de tabla Comment
+exports.User = User; // Exportar definición de tabla User
+exports.Favourites = Favourites; //Exporta la definición de la tabla Favourites
 
 
 // sequelize.sync() crea e inicializa tabla de preguntas en DB

@@ -6,6 +6,7 @@ var quizController = require('../controllers/quiz_controller');
 var commentController = require('../controllers/comment_controller');
 var sessionController = require('../controllers/session_controller');
 var userController = require('../controllers/user_controller');
+var favouritesController = require('../controllers/favourites_controller');
 
 /* GET paǵina de entrada (home page) . */
 router.get('/', function(req, res, next) {
@@ -29,6 +30,10 @@ router.get('/user/:userId(\\d+)/edit',  sessionController.loginRequired, userCon
 router.put('/user/:userId(\\d+)',  sessionController.loginRequired, userController.ownershipRequired, userController.update);     // actualizar información de cuenta
 router.delete('/user/:userId(\\d+)',  sessionController.loginRequired, userController.ownershipRequired, userController.destroy);     // borrar cuenta
 router.get('/user/:userId(\\d+)/quizes', quizController.index); 	//ver las preguntas creadas por el usuario
+// Definición de rutas para la gestión de favoritos
+router.get('/user/:userId(\\d+)/favourites', favouritesController.index ); //Listar preguntas favoritas del usuario
+router.put('/user/:userId(\\d+)/favourites/:quizId(\\d+)', sessionController.loginRequired, favouritesController.add); //Marcar quiz como favorito
+router.delete('/user/:userId(\\d+)/favourites/:quizId(\\d+)', sessionController.loginRequired, favouritesController.remove); //Desmarcar quiz como favorito
 
 // Definición de rutas de /quizes
 router.get('/quizes:search?', quizController.index); // GET /quizes?search = "Texto" --> ? indica parámetro opcional
