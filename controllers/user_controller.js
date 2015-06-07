@@ -60,6 +60,15 @@ exports.autenticar = function(login, password, callback) {
 	});
 };
 
+// MW que solo deja continuar si el usuario es el administrador
+exports.adminRequired = function(req, res, next){
+	if (req.session.user.isAdmin){
+		next();
+	} else {
+		res.redirect("/");
+	}
+}
+
 // GET /user(:id)/edit
 exports.edit = function(req, res) { //Carga el formulario de edición
 	res.render('user/edit',  { user: req.user, errors:[]});
@@ -130,13 +139,31 @@ exports.update = function(req, res, next) { //Actualiza la DB
 
 // DELETE /user/:id
 exports.destroy = function(req, res, next) { 		//Destruye la cuenta de usuario
+	console.log('\nUser deleted: '+req.user.username);
+	
+	var borrar = req.session.user.id === req.user.id;
+	console.log("\nborrar: "+borrar);
+
 	req.user.destroy().then( function() {
-		//borra la sesión y redirige a /
-		console.log('\nUser deleted: '+req.session.user.username);
-		delete req.session.user;
-		res.redirect('/');
+		//borra la sesión
+		if(borrar){ 	//Si lo ha borrado el administrador no tiene que cerrar sesión
+			delete req.session.user;
+		}
+		// Redirige
+		var redir = req.session.redir || '/';
+		res.redirect(redir);
 	}).catch(function(error){
 		next(error);
 	});
 };
+
+// GET /user/all
+exports.all = function(req, res, next){				//Gestión de cuentas de usuario para el admin
+	models.User.findAll().then(function(users) {
+		req.session.redir = req.path;
+		res.render("user/all.ejs", {users: users, errors: []} );
+	}).catch(function(error){
+		next(error);
+	})
+}
 

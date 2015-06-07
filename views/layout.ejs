@@ -19,8 +19,12 @@
           <span class="right">
             <%=session.user.username%> 
           - <a href="/user/<%=session.user.id%>/edit">Settings</a> 
-          - <a href="/logout">Logout</a></span>
-        <%}%>
+          - <a href="/logout">Logout</a>
+          <%if(session.user.isAdmin){%>
+            - <a href="/user/all">Lista de usuarios</a> 
+          <%}
+        }%>
+        </span>
 
         <h1>Quiz<span>: El juego de las preguntas</span></h1>
       </header>

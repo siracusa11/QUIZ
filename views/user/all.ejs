@@ -1,0 +1,23 @@
+
+
+<h2> Lista de usuarios registrados </h2>
+<br>
+
+<table class="center">
+  <% var i; for (i=0; i < users.length; i++) { %>        
+    <tr>
+      <td><%= users[i].username %></a></td>
+        <%if (session.user.isAdmin) {%>
+        <td>
+        	<form method="post" action="/user/<%=users[i].id%>?_method=delete">
+				<button type="submit" onClick="return confirm('Borrar cuenta: <%= users[i].username %>')">
+				Eliminar cuenta
+				</button>
+			</form>
+        </td>
+        <%}
+      }%>
+    </tr> 
+</table>
+
+
