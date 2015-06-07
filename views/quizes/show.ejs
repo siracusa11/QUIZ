@@ -18,7 +18,7 @@
 	<tr>
 		<%if(quiz.Comments[index].publicado){%>
 			<td>- <%=quiz.Comments[index].texto%></td>
-		<%} else if(session.user && (session.user.isAdmin || (session.user && quiz.UserId === session.user.id))){%>
+		<%} else if((session.user && session.user.isModerator) || (session.user && quiz.UserId === session.user.id)){%>
 				<td>- <%=quiz.Comments[index].texto%> </td>
 				<td><a href="/quizes/<%= quiz.id %>/comments/<%=quiz.Comments[index].id%>/publish"><button>Publicar</button></a><td>
 				<td>

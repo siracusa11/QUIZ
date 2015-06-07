@@ -53,6 +53,10 @@ module.exports = function(sequelize, DataTypes) {
 			isAdmin:{ //Indica si el usuario es administrador. Solo se rellena al crear la DB
 				type: DataTypes.BOOLEAN,
 				defaultValue: false
+			},
+			isModerator:{ //Indica si el usuario es moderador, puesto otorgado por el administrador
+				type: DataTypes.BOOLEAN,
+				defaultValue: false
 			}
 		},
 		{

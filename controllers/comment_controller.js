@@ -12,10 +12,10 @@ exports.ownershipRequired = function(req, res, next){
 		if (quiz) {
 			var objQuizOwner = quiz.UserId;
 			var logUser = req.session.user.id;
-			var isAdmin = req.session.user.isAdmin;
+			var isModerator = req.session.user.isModerator;
 
 			//Puede modificar quizes si es el administrador o el propietario del quiz
-			if ( isAdmin || objQuizOwner === logUser){
+			if ( isModerator || objQuizOwner === logUser){
 				next();
 			} else {
 				res.redirect('/');

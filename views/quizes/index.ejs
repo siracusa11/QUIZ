@@ -13,7 +13,7 @@
           <% var quiz = quizes[i]; %>
           <%include ../favourites/_stars.ejs %>
         </td>
-        <%if (session.user.isAdmin || session.user.id ===quizes[i].UserId) {%>
+        <%if (session.user.isModerator || session.user.id ===quizes[i].UserId) {%>
         <td><a href="/quizes/<%= quizes[i].id %>/edit"><button>editar</button></a></td>
         <td>
           <form method="post" action="/quizes/<%= quizes[i].id %>?_method=delete">

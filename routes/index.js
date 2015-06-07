@@ -31,7 +31,9 @@ router.put('/user/:userId(\\d+)',  sessionController.loginRequired, userControll
 router.delete('/user/:userId(\\d+)',  sessionController.loginRequired, userController.ownershipRequired, userController.destroy);     // borrar cuenta
 router.get('/user/:userId(\\d+)/quizes', quizController.index); 	//ver las preguntas creadas por el usuario
 // Definición de rutas para la gestión de usuarios por parte del administrador
-router.get('/user/all', sessionController.loginRequired, userController.adminRequired, userController.all);
+router.get('/user/all', sessionController.loginRequired, userController.privilegesRequired, userController.all);
+router.put('/user/:userId(\\d+)/up', sessionController.loginRequired, userController.adminRequired, userController.up);
+router.put('/user/:userId(\\d+)/down', sessionController.loginRequired, userController.adminRequired, userController.down);
 // Definición de rutas para la gestión de favoritos
 router.get('/user/:userId(\\d+)/favourites', favouritesController.index ); //Listar preguntas favoritas del usuario
 router.put('/user/:userId(\\d+)/favourites/:quizId(\\d+)', sessionController.loginRequired, favouritesController.add); //Marcar quiz como favorito

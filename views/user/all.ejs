@@ -7,16 +7,35 @@
   <% var i; for (i=0; i < users.length; i++) { %>        
     <tr>
       <td><%= users[i].username %></a></td>
-        <%if (session.user.isAdmin) {%>
-        <td>
+        <%if (session.user.isModerator) {%>
+        	<td>
         	<form method="post" action="/user/<%=users[i].id%>?_method=delete">
 				<button type="submit" onClick="return confirm('Borrar cuenta: <%= users[i].username %>')">
 				Eliminar cuenta
 				</button>
 			</form>
-        </td>
-        <%}
-      }%>
+        	</td>
+		    <%if(session.user.isAdmin) {
+				if(users[i].isModerator) {%>
+					<td>
+					<form method="post" action="/user/<%= users[i].id %>/down/?_method=put">
+					    <button type="submit" onClick="return confirm('Eliminar moderador: <%= users[i].username %>');" style="color: red;">
+					      	Quitar privilegios
+					    </button>
+					</form>
+					</td>
+				<%} else { %>
+					<td>
+					<form method="post" action="/user/<%= users[i].id %>/up/?_method=put">
+						<button type="submit">
+			      			Dar privilegios
+			   			</button>
+					</form>
+					</td>
+				<%}
+			}
+		}
+    }%>
     </tr> 
 </table>
 

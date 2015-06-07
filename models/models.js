@@ -72,7 +72,7 @@ sequelize.sync().then(function() {
     if(count === 0) { //La tabla se inicializa solo si está vacía
       //Se inicializa con 2 usuarios
       User.bulkCreate(
-        [ {username: 'admin', password: '1234', isAdmin: true}, //única manera de crear admin
+        [ {username: 'admin', password: '1234', isAdmin: true, isModerator: true}, //única manera de crear admin
           {username: 'pepe', password: '5678'}
         ]
       ).then(function(){

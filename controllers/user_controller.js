@@ -6,10 +6,10 @@ var models = require('../models/models.js');
 exports.ownershipRequired = function(req, res, next){
 	var objUser = req.user.id;
 	var logUser = req.session.user.id;
-	var isAdmin = req.session.user.isAdmin;
+	var isModerator = req.session.user.isModerator;
 
 	//Puede modificar quizes si es el administrador o el propietario de la cuenta
-	if ( isAdmin || objUser === logUser){
+	if ( isModerator || objUser === logUser){
 		next();
 	} else {
 		res.redirect('/');
@@ -63,6 +63,15 @@ exports.autenticar = function(login, password, callback) {
 // MW que solo deja continuar si el usuario es el administrador
 exports.adminRequired = function(req, res, next){
 	if (req.session.user.isAdmin){
+		next();
+	} else {
+		res.redirect("/");
+	}
+}
+
+// MW que solo deja continuar si el usuario es el administrador o moderador
+exports.privilegesRequired = function(req, res, next){
+	if (req.session.user.isAdmin || req.session.user.isModerator){
 		next();
 	} else {
 		res.redirect("/");
@@ -157,9 +166,37 @@ exports.destroy = function(req, res, next) { 		//Destruye la cuenta de usuario
 	});
 };
 
+
+// PUT /user/:id/up
+exports.up = function(req, res, next) { //Actualiza la DB y hace al usuario moderador
+  req.user.isModerator = true;
+
+  req.user.save( {fields: ["isModerator"]} ) // save: guarda campo isModerator en DB
+	    .then( function() {
+	      	console.log('\nAhora '+req.user.username+' es moderador.')
+	      	res.redirect('/user/all');
+	    }).catch(function(error){
+  			return next(error); // Lo cambio para avisar al usuario de su error
+  		});
+};
+
+// PUT /user/:id/down
+exports.down = function(req, res, next) { //Actualiza la DB y hace que el usuario ya no sea moderador
+  req.user.isModerator = false;
+
+  req.user.save( {fields: ["isModerator"]} ) // save: guarda campo isModerator en DB
+	    .then( function() {
+	      	console.log('\nAhora '+req.user.username+' ya no es moderador.');
+	      	res.redirect('/user/all');
+	    }).catch(function(error){
+  			return next(error); // Lo cambio para avisar al usuario de su error
+  		});
+};
+
 // GET /user/all
-exports.all = function(req, res, next){				//Gestión de cuentas de usuario para el admin
-	models.User.findAll().then(function(users) {
+exports.all = function(req, res, next){	//Gestión de cuentas de usuario para el admin y moderadores
+	models.User.findAll({where: {isAdmin: false}
+		}).then(function(users) {
 		req.session.redir = req.path;
 		res.render("user/all.ejs", {users: users, errors: []} );
 	}).catch(function(error){
