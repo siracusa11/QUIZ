@@ -64,13 +64,11 @@ exports.show = function(req, res) {
 
 //GET /quizes/:id/answer -> Solo si existe el id llega aquí
 exports.answer = function(req, res) {
-	models.Quiz.find(req.params.quizId).then(function(quiz) {
-		var resultado = 'Incorrecto.';
-		if (req.query.respuesta === req.quiz.respuesta){
-			resultado = 'Correcto.';
-		}
-		res.render('quizes/answer', { quiz:req.quiz, respuesta: resultado, errors: [] });
-	})
+	var resultado = 'Incorrecto.';
+	if (req.query.respuesta === req.quiz.respuesta){
+		resultado = 'Correcto.';
+	}
+	res.render('quizes/answer', { quiz:req.quiz, respuesta: resultado, errors: [] });
 };
 
 //GET /quizes -> Parámetro search opcional /quizes:?search
@@ -171,7 +169,7 @@ exports.edit = function(req, res) {
 
 // PUT /quizes/:id
 exports.update = function(req, res) {
-	//Si el quiz enviado incluye una imagen, su referencia se añada a la DB
+	//Si el quiz enviado incluye una imagen, su referencia se añade a la DB
 	if(req.files.image){
     	req.quiz.image = req.files.image.name;
   	}
@@ -208,11 +206,10 @@ exports.destroy = function(req, res) {
 
 // GET /quizes/statistics
 exports.statistics  = function(req, res, next){
-	console.log("Estadísticas");
+	console.log("\nEstadísticas");
 	models.Quiz.count().then(function (npregs) { 	//Preguntas
 			models.Comment.count().then(function (ncomms) { 	//Comentarios
 					models.Comment.count({ include: models.Quiz, distinct: 'quizId' }).then(function (concomms) { // Preguntas con comentarios
-	//models.Comment.count({ distinct: true, include: models.Quiz}).then(function (concomms) { // Preguntas con comentarios
 		// quiero dar: SELECT COUNT (DISTINCT QUIZID) FROM COMMENTS
 						res.render('quizes/statistics.ejs', {
 							npregs: npregs,
