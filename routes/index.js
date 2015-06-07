@@ -52,6 +52,7 @@ router.get('/quizes/statistics', quizController.statistics);
 router.get('/quizes/:quizId(\\d+)/comments/new', commentController.new); //Accede al formulario de crear comentario
 router.post('/quizes/:quizId(\\d+)/comments', commentController.create); //Crea una entrada en la tabla de comentarios
 router.get('/quizes/:quizId(\\d+)/comments/:commentId(\\d+)/publish', sessionController.loginRequired, commentController.ownershipRequired, commentController.publish);
+router.delete('/quizes/:quizId(\\d+)/comments/:commentId(\\d+)', sessionController.loginRequired, commentController.ownershipRequired, commentController.destroy);
 
 // Definición de rutas de la página de autores
 router.get('/authors', function(req, res, next) {

@@ -3,21 +3,32 @@
 <%}%>
 
 <form method="get" action="/quizes/<%= quiz.id %>/answer">        
-  Pregunta: <%= quiz.pregunta %> <p>
+  <strong>Pregunta: <%= quiz.pregunta %></strong> <p>
   <input type="text" name="respuesta" placeholder="Escriba aquí su respuesta"/>
   <input type="submit" value="Enviar">
 </form>
 <% include ../favourites/_stars.ejs %>
 
 <br>
-<p><a href="/quizes/<%= quiz.id %>/comments/new"><button>Nuevo comentario</button></a></p>
+<p class = "center"><a href="/quizes/<%= quiz.id %>/comments/new"><button>Nuevo comentario</button></a></p>
 
-<p><strong>Comentarios:</strong></p>
-<%for(index in quiz.Comments){%>
-	<%if(quiz.Comments[index].publicado){%>
-		<p>- <%=quiz.Comments[index].texto%></p>
-	<%} else if(session.user && (session.user.isAdmin || (session.user && quiz.UserId === session.user.id))){%>
-			<p>- <%=quiz.Comments[index].texto%>
-			<a href="/quizes/<%= quiz.id %>/comments/<%=quiz.Comments[index].id%>/publish"><button>Publicar</button></a></p>
+<p class = "center"><strong>Comentarios:</strong></p>
+<table class="center">
+	<%for(index in quiz.Comments){%>
+	<tr>
+		<%if(quiz.Comments[index].publicado){%>
+			<td>- <%=quiz.Comments[index].texto%></td>
+		<%} else if(session.user && (session.user.isAdmin || (session.user && quiz.UserId === session.user.id))){%>
+				<td>- <%=quiz.Comments[index].texto%> </td>
+				<td><a href="/quizes/<%= quiz.id %>/comments/<%=quiz.Comments[index].id%>/publish"><button>Publicar</button></a><td>
+				<td>
+					<form method="post" action="/quizes/<%= quiz.id %>/comments/<%=quiz.Comments[index].id%>?_method=delete">
+						<button type="submit" onClick="return confirm('Borrar comentario: <%= quiz.Comments[index].texto %>')">
+							Eliminar
+						</button>
+					</form>
+				</td>
+		<%}%>
+	</tr>
 	<%}%>
-<%}%>
+</table>
