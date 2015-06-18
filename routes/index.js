@@ -40,7 +40,7 @@ router.put('/user/:userId(\\d+)/favourites/:quizId(\\d+)', sessionController.log
 router.delete('/user/:userId(\\d+)/favourites/:quizId(\\d+)', sessionController.loginRequired, favouritesController.remove); //Desmarcar quiz como favorito
 
 // Definición de rutas de /quizes
-router.get('/quizes:search?', quizController.index); // GET /quizes?search = "Texto" --> ? indica parámetro opcional
+router.get('/quizes', quizController.index); // GET /quizes?search = "Texto" --> ? indica parámetro opcional
 router.get('/quizes/:quizId(\\d+)', quizController.show);
 router.get('/quizes/:quizId(\\d+)/answer', quizController.answer);
 router.get('/quizes/new', sessionController.loginRequired, quizController.new);

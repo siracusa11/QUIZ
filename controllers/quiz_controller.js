@@ -79,13 +79,14 @@ exports.index = function(req, res, next) {
 	if(req.user){
 		req.session.redir = req.path;// Cuando lleva /user el middleware no actualiza redir -> compatibilidad Mis Preguntas y Favoritos 
 		options.where = {UserId: req.user.id};
-	} else if (req.query.search){ //Lo pongo así para conservar la funcionalidad de la caja de búsquedas
+	} else if (req.query.search || req.query.tema){ //Lo pongo así para conservar la funcionalidad de la caja de búsquedas
 		var search = req.query.search || '';
 		//Lo apaña para quitar espacios
 		var search_like = "%" + search.replace(/ +/g, "%") + "%";
-		options.where = ['pregunta like ?', search_like];
-		options.order = [['updatedAt', 'DESC']];
+		var tema = req.query.tema || '%'; // Buscar por tema
+		options.where = ['pregunta like ? and tema like ?', search_like, tema];
 	}
+	options.order = [['updatedAt', 'DESC']];
 
 	models.Quiz.findAll(options).then(function(quizes) {
 		//Marcamos los quizes favoritos para que cambie la vista
@@ -124,7 +125,7 @@ exports.index = function(req, res, next) {
 // GET /quizes/new
 exports.new = function (req, res) {
 	var quiz = models.Quiz.build( //crea objeto quiz
-		{pregunta: "", respuesta: ""}
+		{pregunta: "", respuesta: "", tema: ""}
 	);
 	res.render('quizes/new', {quiz: quiz, errors: []});
 };
@@ -150,7 +151,7 @@ exports.create = function(req, res) {
         		res.render('quizes/new', {quiz: quiz, errors: err.errors});
      		} else {
         		quiz // save: guarda en DB campos pregunta y respuesta de quiz
-       			.save({fields: ["pregunta", "respuesta", "UserId", "image"]})
+       			.save({fields: ["pregunta", "respuesta", "UserId", "image", "tema"]})
         		.then( function(){ 
         			res.redirect('/quizes');
         		})
@@ -175,6 +176,7 @@ exports.update = function(req, res) {
   	}
 	req.quiz.pregunta  = req.body.quiz.pregunta;
 	req.quiz.respuesta = req.body.quiz.respuesta;
+	req.quiz.tema = req.body.quiz.tema;
 
   	req.quiz
   	.validate()
@@ -184,7 +186,7 @@ exports.update = function(req, res) {
 	        	res.render('quizes/edit', {quiz: req.quiz, errors: err.errors});
 	      	} else {
 	        	req.quiz     // save: guarda campos pregunta y respuesta en DB
-	        	.save( {fields: ["pregunta", "respuesta", "image"]})
+	        	.save( {fields: ["pregunta", "respuesta", "image", "tema"]})
 	        	.then( function(){ 
 	        		res.redirect('/quizes');
 	        	});

@@ -1,5 +1,13 @@
 	<form method="get" action="/quizes">        
 	  Buscar pregunta<br>
+    <select name="tema">
+      <option value="%" selected>Todos</option>
+      <option value="%Otros%">Otros</option>
+      <option value="%Humanidades%">Humanidades</option>
+      <option value="%Ocio%">Ocio</option>
+      <option value="%Ciencia%">Ciencia</option>
+      <option value="%Tecnología%">Tecnología</option>
+    </select>    
 	  <input type="text" name="search" placeholder="Escriba su búsqueda"/>
 	  <input type="submit" value="Enviar">
 	</form>
@@ -7,6 +15,7 @@
 	<table>
   <% var i; for (i=0; i < quizes.length; i++) { %>        
     <tr>
+      <td><span style="color: purple;"><%=quizes[i].tema %>: </span></td>
       <td><a href="/quizes/<%= quizes[i].id %>"><%= quizes[i].pregunta %></a></td>
       <%if(session.user){%>
         <td>
